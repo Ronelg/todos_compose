@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.ComposeChat" parent="Platform.Theme.ComposeChat" >
+        <item name="colorPrimary">@color/orange300</item>
+        <item name="colorPrimaryDark">@color/orange400</item>
+        <item name="colorAccent">@color/green400</item>
+    </style>
+</resources>

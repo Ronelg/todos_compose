@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light -->
+    <color name="orange500">#FF9800</color>
+    <color name="orange800">#EF6C00</color>
+    <color name="green700">#689F38</color>
+    <!-- Dark -->
+    <color name="orange300">#FFB74D</color>
+    <color name="orange400">#FFA726</color>
+    <color name="green400">#9CCC65</color>
+
+    <!-- Status bar -->
+    <color name="black30">#4D000000</color>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/todos_graph"
+    app:startDestination="@id/navigation_todos">
+
+    <fragment
+        android:id="@+id/navigation_todos"
+        android:name="com.example.composechat.ui.todos.TodosFragment"
+        android:label="Todos" />
+    <fragment
+        android:id="@+id/navigation_todo_details"
+        android:name="com.example.composechat.ui.tododetails.TodoDetailsFragment"
+        android:label="Todo Details" />
+</navigation>
