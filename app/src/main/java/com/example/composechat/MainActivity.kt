@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         // including IME animations
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        val appContainer = (application as TodosApplication).container
         setContent {
             val scaffoldState = rememberScaffoldState()
 

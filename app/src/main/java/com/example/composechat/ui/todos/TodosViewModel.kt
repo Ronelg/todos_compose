@@ -2,26 +2,56 @@ package com.example.composechat.ui.todos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.composechat.data.todosFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import com.example.composechat.data.Todo
+import com.example.composechat.data.TodosRepository
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 
-class TodosViewModel: ViewModel() {
+class TodosViewModel : ViewModel() {
 
-    private val _todosUiState = MutableStateFlow(TodosUiState(emptyList()))
-    val todosUiState = _todosUiState.asStateFlow()
+    private val viewModelState = MutableStateFlow(TodosVieModelState())
+
+    private val todosRepository = TodosRepository.getInstance()
+
+    // UI state exposed to the UI
+    val uiState = viewModelState
+        .map { it.toTodosUiState() }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            viewModelState.value.toTodosUiState()
+        )
 
     init {
+
+        // Observe for completed todos changes in the repo layer
         viewModelScope.launch {
-            todosFlow.collect { todos ->
-                _todosUiState.tryEmit(TodosUiState(todos))
-            }
+            combine(
+                todosRepository.getTodos(),
+                todosRepository.observeCompleted()
+            ) { todos, completed ->
+                viewModelState.update { it.copy(completed = completed, todos = todos) }
+            }.collect {  }
+        }
+
+    }
+
+    fun toggleTodo(todoId: String) {
+        viewModelScope.launch {
+            todosRepository.toggleComplete(todoId)
         }
     }
 
     fun addTodo() {
-        _todosUiState.value.addTodo()
+        viewModelScope.launch {
+            TodosRepository.getInstance().addTodo(
+                Todo(
+                    id = UUID.randomUUID().toString(),
+                    title = "New Todo 1",
+                    description = "New Description",
+                )
+            )
+        }
     }
 }
