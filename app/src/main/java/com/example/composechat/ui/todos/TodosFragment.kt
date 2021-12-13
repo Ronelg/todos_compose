@@ -4,15 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -22,7 +16,7 @@ import com.example.composechat.R
 
 class TodosFragment : Fragment() {
 
-    val viewModel: TodosViewModel by viewModels()
+    private val viewModel: TodosViewModel by viewModels()
 
     @ExperimentalMaterial3Api
     override fun onCreateView(
@@ -37,27 +31,19 @@ class TodosFragment : Fragment() {
         setContent {
             val todosUiState by viewModel.uiState.collectAsState()
 
-            Scaffold(
-                content = {
-                    TodoContent(
-                        uiState = todosUiState,
-                        onToggleComplete = {id -> viewModel.toggleTodo(id)},
-                        navigateToTodoDetails = { id ->
-                            val bundle = bundleOf("id" to id)
-                            findNavController().navigate(
-                                R.id.navigation_todo_details,
-                                bundle
-                            )
-                        },
+            TodosScreen(
+                uiState = todosUiState,
+                navigateToTodoDetails = { id ->
+                    val bundle = bundleOf("id" to id)
+                    findNavController().navigate(
+                        R.id.navigation_todo_details,
+                        bundle
                     )
                 },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = { viewModel.addTodo() },
-                        shape = RectangleShape,
-                        content = { Icon(Icons.Filled.Add, "") }
-                    )
-                }
+                onToggleComplete = {id -> viewModel.toggleTodo(id)},
+                onAddTodo = {viewModel.addTodo()},
+                onToggleFilter = { viewModel.toggleFilter()}
+
             )
         }
     }

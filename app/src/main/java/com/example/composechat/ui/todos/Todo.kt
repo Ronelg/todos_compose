@@ -8,14 +8,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Checkbox
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composechat.data.Todo
@@ -24,50 +28,67 @@ import com.example.composechat.theme.TodosTheme
 import com.example.composechat.ui.components.TodosAppBar
 
 
-//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodosScreen(
-){
-
+    uiState: TodosUiState,
+    navigateToTodoDetails: (String) -> Unit,
+    onToggleComplete: (String) -> Unit,
+    onAddTodo: () -> Unit,
+    onToggleFilter: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TodosAppBar(
+                title = { Text(text = "Todos") },
+                actions = {
+                    Icon(
+                        imageVector = Icons.Outlined.FilterList,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                        .clickable(onClick = onToggleFilter)
+                            .padding(horizontal = 12.dp, vertical = 16.dp)
+                            .height(24.dp),
+                        contentDescription = "stringResource(id = R.string.search"
+                    )
+                }
+            )
+        },
+        content = {
+            TodoContent(
+                uiState = uiState,
+                onToggleComplete = onToggleComplete,
+                navigateToTodoDetails = navigateToTodoDetails
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddTodo,
+                shape = RectangleShape,
+                content = { androidx.compose.material.Icon(Icons.Filled.Add, "") }
+            )
+        }
+    )
 }
 
 @Composable
 fun TodoContent(
     uiState: TodosUiState,
     navigateToTodoDetails: (String) -> Unit,
-    modifier: Modifier = Modifier,
     onToggleComplete: (String) -> Unit
 ) {
-    Column {
-        TodosAppBar(
-            title = { Text(text = "Todos") },
-            actions = {
-                Icon(
-                    imageVector = Icons.Outlined.FilterList,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-//                        .clickable(onClick = { functionalityNotAvailablePopupShown = true })
-                        .padding(horizontal = 12.dp, vertical = 16.dp)
-                        .height(24.dp),
-                    contentDescription = "stringResource(id = R.string.search"
-                )
-            }
-        )
-
-        when(uiState){
-            is TodosUiState.HasTotods -> {
-                TodosList(
-                    uiState = uiState,
-                    onToggleComplete = onToggleComplete,
-                    navigateToTodoDetails = navigateToTodoDetails,
-                )
-            }
-            TodosUiState.NoTotods -> {
-                Text(
-                    text = "No Todos",
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
+    when (uiState) {
+        is TodosUiState.HasTotods -> {
+            TodosList(
+                uiState = uiState,
+                onToggleComplete = onToggleComplete,
+                navigateToTodoDetails = navigateToTodoDetails,
+            )
+        }
+        TodosUiState.NoTotods -> {
+            Text(
+                text = "No Todos",
+                style = MaterialTheme.typography.titleMedium,
+            )
         }
     }
 }
@@ -78,7 +99,7 @@ fun TodosList(
     onToggleComplete: (String) -> Unit,
     navigateToTodoDetails: (String) -> Unit,
 ) {
-    LazyColumn{
+    LazyColumn {
         for (index in uiState.todos.indices) {
             item {
                 val todo = uiState.todos[index]
@@ -138,8 +159,8 @@ fun TodoItem(
     }
 }
 
-@Preview(name  = "TodoItemPreview" )
-@Preview(name  = "TodoItemPreviewDark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "TodoItemPreview")
+@Preview(name = "TodoItemPreviewDark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun TodoItemPreview() {
     TodosTheme {
@@ -152,8 +173,8 @@ fun TodoItemPreview() {
     }
 }
 
-@Preview(name  = "TodoItemSelectedPreview" )
-@Preview(name  = "TodoItemSelectedPreview", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "TodoItemSelectedPreview")
+@Preview(name = "TodoItemSelectedPreview", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun TodoItemSelectedPreview() {
     TodosTheme {

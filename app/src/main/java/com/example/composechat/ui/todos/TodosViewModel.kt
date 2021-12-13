@@ -14,6 +14,8 @@ class TodosViewModel : ViewModel() {
 
     private val todosRepository = TodosRepository.getInstance()
 
+    private val showOnlyCompleted = MutableStateFlow(false)
+
     // UI state exposed to the UI
     val uiState = viewModelState
         .map { it.toTodosUiState() }
@@ -29,9 +31,11 @@ class TodosViewModel : ViewModel() {
         viewModelScope.launch {
             combine(
                 todosRepository.getTodos(),
-                todosRepository.observeCompleted()
-            ) { todos, completed ->
-                viewModelState.update { it.copy(completed = completed, todos = todos) }
+                todosRepository.observeCompleted(),
+                showOnlyCompleted
+            ) { todos, completed, filter ->
+                val list = if(filter) todos.filter { completed.contains(it.id) }  else todos
+                viewModelState.update { it.copy(completed = completed, todos = list) }
             }.collect {  }
         }
 
@@ -53,5 +57,9 @@ class TodosViewModel : ViewModel() {
                 )
             )
         }
+    }
+
+    fun toggleFilter() {
+        showOnlyCompleted.value = !showOnlyCompleted.value
     }
 }
