@@ -10,9 +10,9 @@ import java.util.*
 
 class TodosViewModel : ViewModel() {
 
-    private val viewModelState = MutableStateFlow(TodosVieModelState())
-
     private val todosRepository = TodosRepository.getInstance()
+
+    private val viewModelState = MutableStateFlow(TodosVieModelState())
 
     private val showOnlyCompleted = MutableStateFlow(false)
 
@@ -26,7 +26,6 @@ class TodosViewModel : ViewModel() {
         )
 
     init {
-
         // Observe for completed todos changes in the repo layer
         viewModelScope.launch {
             combine(
@@ -38,7 +37,6 @@ class TodosViewModel : ViewModel() {
                 viewModelState.update { it.copy(completed = completed, todos = list) }
             }.collect {  }
         }
-
     }
 
     fun toggleTodo(todoId: String) {
@@ -49,7 +47,7 @@ class TodosViewModel : ViewModel() {
 
     fun addTodo() {
         viewModelScope.launch {
-            TodosRepository.getInstance().addTodo(
+            todosRepository.addTodo(
                 Todo(
                     id = UUID.randomUUID().toString(),
                     title = "New Todo 1",

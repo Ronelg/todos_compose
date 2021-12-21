@@ -19,13 +19,13 @@ class TodosRepository {
 
     fun getTodos() = todos.asSharedFlow()
 
+    fun observeCompleted(): Flow<Set<String>> = completed
+
     fun addTodo(todo: Todo) {
         val list = todos.replayCache[0].toMutableList()
         list.add(todo)
         todos.tryEmit(list)
     }
-
-    fun observeCompleted(): Flow<Set<String>> = completed
 
     fun toggleComplete(todoId: String) {
         val set = completed.value.toMutableSet()

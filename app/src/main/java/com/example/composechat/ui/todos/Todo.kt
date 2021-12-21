@@ -7,16 +7,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Checkbox
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
@@ -26,6 +23,7 @@ import com.example.composechat.data.Todo
 import com.example.composechat.data.initialTodos
 import com.example.composechat.theme.TodosTheme
 import com.example.composechat.ui.components.TodosAppBar
+import java.util.*
 
 
 @Composable
@@ -45,7 +43,7 @@ fun TodosScreen(
                         imageVector = Icons.Outlined.FilterList,
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
-                        .clickable(onClick = onToggleFilter)
+                            .clickable(onClick = onToggleFilter)
                             .padding(horizontal = 12.dp, vertical = 16.dp)
                             .height(24.dp),
                         contentDescription = "stringResource(id = R.string.search"
@@ -183,6 +181,68 @@ fun TodoItemSelectedPreview() {
             onToggleComplete = {},
             todo = initialTodos[1],
             isComplete = true
+        )
+    }
+}
+
+@Composable
+fun TodoItem2(
+    todo: Todo,
+    isComplete: Boolean
+) {
+
+    val backgroundColor = if (isComplete) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+
+    var isCheched by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .clip(shape = RoundedCornerShape(corner = CornerSize(8.dp)))
+            .background(color = backgroundColor)
+//        .clickable { onTodoClick(todo.id) }
+            .padding(16.dp)
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = todo.title)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = todo.description)
+        }
+        Checkbox(
+            checked = isCheched,
+            onCheckedChange = { isCheched = it }
+        )
+    }
+}
+
+@Preview()
+@Composable
+fun P4() {
+    TodosTheme {
+        TodoItem2(
+            todo = Todo(
+                id = UUID.randomUUID().toString(),
+                title = "Title",
+                description = "Description"
+            ),
+            isComplete = true
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TodosListPreview() {
+    TodosTheme {
+        TodosList(
+            uiState = TodosUiState.HasTotods(emptySet(), initialTodos),
+            onToggleComplete = {},
+            navigateToTodoDetails = {}
         )
     }
 }

@@ -26,7 +26,7 @@ class TodosFragment : Fragment() {
     ): View = ComposeView(inflater.context).apply {
         layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
         setContent {
             val todosUiState by viewModel.uiState.collectAsState()
@@ -40,10 +40,9 @@ class TodosFragment : Fragment() {
                         bundle
                     )
                 },
-                onToggleComplete = {id -> viewModel.toggleTodo(id)},
-                onAddTodo = {viewModel.addTodo()},
-                onToggleFilter = { viewModel.toggleFilter()}
-
+                onToggleComplete = { id -> viewModel.toggleTodo(id) },
+                onAddTodo = { viewModel.addTodo() },
+                onToggleFilter = { viewModel.toggleFilter() }
             )
         }
     }
